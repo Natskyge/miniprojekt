@@ -53,14 +53,14 @@ int
 push(Data data, Stack *stack)
 {
 	if (stack->size >= stack->max) {
-		/* Error, stackoverflow */
-		return 1;
+		/* Error, stackoverflow or null */
+		return 0;
 	} else {
 		/* Make item and change the stack accordingly */
 		Item *newItem = makeItem(data, stack->top);
 		stack->top = newItem;
 		++stack->size;
-		return 0;
+		return 1;
 	}
 }
 
@@ -68,16 +68,16 @@ push(Data data, Stack *stack)
 int
 pop(Stack *stack)
 {
-	if (0 == stack->size) {
-		/* Stack is empty */
-		return 1;
+	if (0 >= stack->size || !stack) {
+		/* Error, stack is empty or null*/
+		return 0;
 	} else {
 		/* Change top to the one below and free the old top from memory */
 		Item *oldTop = stack->top;
 		stack->top = stack->top->prev;
 		--stack->size;
 		free(oldTop);
-		return 0;
+		return 1;
 	}
 }
 
@@ -85,8 +85,8 @@ pop(Stack *stack)
 Data
 peek(Stack* stack)
 {
-	if (stack->size == 0) {
-		/* There is no data */
+	if (stack->size == 0 || !stack) {
+		/* There is no data, returns default value of Data */
 	} else {
 		return stack->top->data;
 	}
@@ -99,34 +99,40 @@ clearStack(Stack *stack)
 	while (stack->size > 0) {
 		pop(stack);
 	}
-	return 0;
+	return 1;
+}
+
+int
+printStack(Stack* stack)
+{
+	printf("Size: %d\n", stack->size);
+	printf("Max:  %d\n", stack->max);
+	printf("Data: %d\n\n", peek(stack));
+	return 1;
 }
 
 int
 main(void)
 {
 	/* A test of the data Stucture */
-	Stack *myStack = stackInit(10);      /* Returns: */
-	printf("Size: %d\n", myStack->size); /* 0        */
-	printf("Max:  %d\n", myStack->max);  /* 10       */
+	Stack *myStack = stackInit(10);
+	printf("pop return code: %d\n", pop(myStack));
+	printStack(myStack);
+
 	
 	push((Data){ .data = 23 }, myStack);
-	printf("Size: %d\n", myStack->size); /* 1        */
-	printf("Max:  %d\n", myStack->max);  /* 10       */
-	printf("Data: %d\n", peek(myStack)); /* 23       */
+	printStack(myStack);
 	
 	pop(myStack);
-	printf("Size: %d\n", myStack->size); /* 0        */
-	printf("Max:  %d\n", myStack->max);  /* 10       */
+	printStack(myStack);
+
 	
-	for (int i = 1; push((Data){ .data = i }, myStack) != 1; i++) {}
-	printf("Size: %d\n", myStack->size); /* 10       */
-	printf("Max:  %d\n", myStack->max);  /* 10       */
-	printf("Data: %d\n", peek(myStack)); /* 10       */
+	for (int i = 1; push((Data){ .data = i }, myStack) != 0; i++) {}
+	printf("push return code: %d\n", push((Data){ .data = 23 }, myStack));
+	printStack(myStack);
 	
 	clearStack(myStack);
-	printf("Size: %d\n", myStack->size); /* 0        */
-	printf("Max:  %d\n", myStack->max);  /* 10       */
+	printStack(myStack);
 	
 	free(myStack);
 	
