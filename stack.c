@@ -85,7 +85,11 @@ pop(Stack *stack)
 Data
 peek(Stack* stack)
 {
-	return stack->top->data;
+	if (stack->size == 0) {
+		/* There is no data */
+	} else {
+		return stack->top->data;
+	}
 }
 
 /* Free the stacks items from memory */
@@ -105,19 +109,26 @@ main(void)
 	Stack *myStack = stackInit(10);      /* Returns: */
 	printf("Size: %d\n", myStack->size); /* 0        */
 	printf("Max:  %d\n", myStack->max);  /* 10       */
+	
 	push((Data){ .data = 23 }, myStack);
 	printf("Size: %d\n", myStack->size); /* 1        */
 	printf("Max:  %d\n", myStack->max);  /* 10       */
 	printf("Data: %d\n", peek(myStack)); /* 23       */
+	
 	pop(myStack);
 	printf("Size: %d\n", myStack->size); /* 0        */
 	printf("Max:  %d\n", myStack->max);  /* 10       */
+	
 	for (int i = 1; push((Data){ .data = i }, myStack) != 1; i++) {}
 	printf("Size: %d\n", myStack->size); /* 10       */
 	printf("Max:  %d\n", myStack->max);  /* 10       */
 	printf("Data: %d\n", peek(myStack)); /* 10       */
+	
 	clearStack(myStack);
 	printf("Size: %d\n", myStack->size); /* 0        */
 	printf("Max:  %d\n", myStack->max);  /* 10       */
+	
+	free(myStack);
+	
 	return 0;
 }
