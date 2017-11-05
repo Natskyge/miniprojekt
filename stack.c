@@ -52,8 +52,8 @@ makeItem(Data data, Item *prev)
 int
 push(Data data, Stack *stack)
 {
-	if (stack->size >= stack->max) {
-		/* Error, stackoverflow or null */
+	if (!stack || stack->size >= stack->max) {
+		/* Error, stackoverflow or stack is null */
 		return 0;
 	} else {
 		/* Make item and change the stack accordingly */
@@ -68,7 +68,7 @@ push(Data data, Stack *stack)
 int
 pop(Stack *stack)
 {
-	if (0 >= stack->size || !stack) {
+	if (!stack || 0 >= stack->size) {
 		/* Error, stack is empty or null*/
 		return 0;
 	} else {
@@ -85,7 +85,7 @@ pop(Stack *stack)
 Data
 peek(Stack* stack)
 {
-	if (stack->size == 0 || !stack) {
+	if (!stack || stack->size == 0) {
 		/* There is no data, returns default value of Data */
 	} else {
 		return stack->top->data;
@@ -119,22 +119,26 @@ main(void)
 	printf("pop return code: %d\n", pop(myStack));
 	printStack(myStack);
 
-	
+
 	push((Data){ .data = 23 }, myStack);
 	printStack(myStack);
-	
+
 	pop(myStack);
 	printStack(myStack);
 
-	
 	for (int i = 1; push((Data){ .data = i }, myStack) != 0; i++) {}
 	printf("push return code: %d\n", push((Data){ .data = 23 }, myStack));
 	printStack(myStack);
-	
+
 	clearStack(myStack);
 	printStack(myStack);
-	
+
+	myStack = NULL;
+
+	printf("push return code: %d\n", push((Data){ .data = 23 }, myStack));
+	printf("pop return code: %d\n", myStack);
+
 	free(myStack);
-	
-	return 0;
+
+	return 1;
 }
