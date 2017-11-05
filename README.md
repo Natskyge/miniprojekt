@@ -1,2 +1,2 @@
-# miniprojekt
-Skole projekt
+# Skole projekt
+En stack data struktur implementering.
