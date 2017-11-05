@@ -1,14 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-/* Definition of the data, can be changed as needed */
-typedef struct Data {
-	int data;
-} Data;
+/* Type of data, replace int as needed */
+#define type int
 
 /* An item in the stack */
 typedef struct Item {
-	Data data;
+	type data;
 	struct Item *prev;
 } Item;
 
@@ -36,7 +34,7 @@ stackInit(size_t max)
 
 /* Create an item with the values passed */
 Item*
-makeItem(Data data, Item *prev)
+makeItem(type data, Item *prev)
 {
 	/* Allocate memory for the item */
 	Item *newItem = (Item*)malloc(sizeof(Item));
@@ -50,17 +48,17 @@ makeItem(Data data, Item *prev)
 
 /* Push an item to the top of the stack */
 int
-push(Data data, Stack *stack)
+push(type data, Stack *stack)
 {
 	if (!stack || stack->size >= stack->max) {
 		/* Error, stackoverflow or stack is null */
-		return 0;
+		return 1;
 	} else {
 		/* Make item and change the stack accordingly */
 		Item *newItem = makeItem(data, stack->top);
 		stack->top = newItem;
 		++stack->size;
-		return 1;
+		return 0;
 	}
 }
 
@@ -70,23 +68,23 @@ pop(Stack *stack)
 {
 	if (!stack || 0 >= stack->size) {
 		/* Error, stack is empty or null*/
-		return 0;
+		return 1;
 	} else {
 		/* Change top to the one below and free the old top from memory */
 		Item *oldTop = stack->top;
 		stack->top = stack->top->prev;
 		--stack->size;
 		free(oldTop);
-		return 1;
+		return 0;
 	}
 }
 
 /* Return the data of the top item */
-Data
+type
 peek(Stack* stack)
 {
 	if (!stack || stack->size == 0) {
-		/* There is no data, returns default value of Data */
+		/* There is no data, returns default value of type */
 	} else {
 		return stack->top->data;
 	}
@@ -96,10 +94,13 @@ peek(Stack* stack)
 int
 clearStack(Stack *stack)
 {
+	if (!stack || stack->size <= 0)
+		return 1;
+	
 	while (stack->size > 0) {
 		pop(stack);
 	}
-	return 1;
+	return 0;
 }
 
 int
@@ -107,7 +108,7 @@ printStack(Stack* stack)
 {
 	printf("Size: %d\n", stack->size);
 	printf("Max:  %d\n", stack->max);
-	printf("Data: %d\n\n", peek(stack));
+	printf("type: %d\n\n", peek(stack));
 	return 1;
 }
 
@@ -120,14 +121,14 @@ main(void)
 	printStack(myStack);
 
 
-	push((Data){ .data = 23 }, myStack);
+	push(23, myStack);
 	printStack(myStack);
 
 	pop(myStack);
 	printStack(myStack);
 
-	for (int i = 1; push((Data){ .data = i }, myStack) != 0; i++) {}
-	printf("push return code: %d\n", push((Data){ .data = 23 }, myStack));
+	for (int i = 1; push(i, myStack) != 1; i++) {}
+	printf("push return code: %d\n", push(23, myStack));
 	printStack(myStack);
 
 	clearStack(myStack);
@@ -135,8 +136,8 @@ main(void)
 
 	myStack = NULL;
 
-	printf("push return code: %d\n", push((Data){ .data = 23 }, myStack));
-	printf("pop return code: %d\n", myStack);
+	printf("push return code: %d\n", push(23, myStack));
+	printf("pop return code: %d\n", pop(myStack));
 
 	free(myStack);
 
