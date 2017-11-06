@@ -68,7 +68,7 @@ type
 peek(Stack* stack)
 {
 	if (!stack || stack->size == 0) {
-		// No data
+		/* No data */
 	} else {
 		return stack->top->data;
 	}
