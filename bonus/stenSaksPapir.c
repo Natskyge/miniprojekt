@@ -27,5 +27,5 @@ main(void)
 	printf(whoWon(STEN,  PAPIR));
 	printf(whoWon(STEN,  SAKS));
 	printf(whoWon(SAKS,  STEN));
-	return 1;
+	return 0;
 }
