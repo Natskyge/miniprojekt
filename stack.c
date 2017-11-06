@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define type int
+#define TYPE int
 
 typedef struct Item {
-	type data;
+	TYPE data;
 	struct Item *prev;
 } Item;
 
@@ -27,7 +27,7 @@ stackInit(size_t max)
 }
 
 Item*
-makeItem(type data, Item *prev)
+makeItem(TYPE data, Item *prev)
 {
 	Item *newItem = (Item*)malloc(sizeof(Item));
 	
@@ -38,7 +38,7 @@ makeItem(type data, Item *prev)
 }
 
 int
-push(type data, Stack *stack)
+push(TYPE data, Stack *stack)
 {
 	if (!stack || stack->size >= stack->max) {
 		return 1;
@@ -64,7 +64,7 @@ pop(Stack *stack)
 	}
 }
 
-type
+TYPE
 peek(Stack* stack)
 {
 	if (!stack || stack->size == 0) {
@@ -92,7 +92,7 @@ printStack(Stack* stack)
 {
 	printf("Size: %d\n", stack->size);
 	printf("Max:  %d\n", stack->max);
-	printf("type: %d\n\n", peek(stack));
+	printf("TYPE: %d\n\n", peek(stack));
 	return 1;
 }
 
